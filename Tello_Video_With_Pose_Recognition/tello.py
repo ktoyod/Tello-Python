@@ -86,7 +86,7 @@ class Tello:
                 self.response, ip = self.socket.recvfrom(3000)
                 #print(self.response)
             except socket.error as exc:
-                print ("Caught exception socket.error : %s" % exc)
+                print(("Caught exception socket.error : %s" % exc))
 
     def _receive_video_thread(self):
         """
@@ -107,7 +107,7 @@ class Tello:
                     packet_data = ""
 
             except socket.error as exc:
-                print ("Caught exception socket.error : %s" % exc)
+                print(("Caught exception socket.error : %s" % exc))
     
     def _h264_decode(self, packet_data):
         """
@@ -140,7 +140,7 @@ class Tello:
 
         """
 
-        print (">> send cmd: {}".format(command))
+        print((">> send cmd: {}".format(command)))
         self.abort_flag = False
         timer = threading.Timer(self.command_timeout, self.set_abort_flag)
 
@@ -272,7 +272,7 @@ class Tello:
         """
         height = self.send_command('height?')
         height = str(height)
-        height = filter(str.isdigit, height)
+        height = list(filter(str.isdigit, height))
         try:
             height = int(height)
             self.last_height = height
