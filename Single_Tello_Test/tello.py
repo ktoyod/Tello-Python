@@ -68,6 +68,8 @@ class Tello:
         # for ip in self.tello_ip_list:
         #     self.socket.sendto('land'.encode('utf-8'), (ip, 8889))
         # self.socket.close()
+        self.socket.sendto('land'.encode('utf-8'), (self.tello_ip, 8889))
+        self.socket.close()
 
     def get_log(self):
         return self.log

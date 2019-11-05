@@ -1,16 +1,21 @@
 # Tello-Python
 
+## Links
+- [Tello](https://www.ryzerobotics.com/jp/tello)
+- [Tello SDK documentation](https://terra-1-g.djicdn.com/2d4dce68897a46b19fc717f3576b7c6a/Tello%20%E7%BC%96%E7%A8%8B%E7%9B%B8%E5%85%B3/For%20Tello/Tello%20SDK%20Documentation%20EN_1.3_1122.pdf)
+
 ## Introduction
 
 This is a collection of python-based sample code that interact with the Ryze Tello drone.
 
 ## Project Description
 
-This toolkit contains three sample programs based on tello sdk and python2.7,including Single_Tello_Test, Tello_Video, and Tello_Video (With_Pose_Recognition). There is also a program file named tello_state.py.
+This toolkit contains three sample programs based on tello sdk and python3,including Single_Tello_Test, Tello_Video, and Tello_Video (With_Pose_Recognition). There is also a program file named `tello_state.py`.
 
 - **Single_Tello_Test**
 
  In Single_Tello_Test,You can design a series of command combinations by writing a txt script to let tello execute a series of actions you have designed. This program can also be used as a command set test tool for tello.
+ This program can also be used interactively.
 
 - **Tello_Video**
 
