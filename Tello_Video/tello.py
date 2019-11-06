@@ -2,7 +2,10 @@ import socket
 import threading
 import time
 import numpy as np
-import libh264decoder
+# import libh264decoder
+import subprocess as sp
+
+from tello_decoder import TelloDecoder
 
 class Tello:
     """Wrapper class to interact with the Tello drone."""
@@ -22,7 +25,8 @@ class Tello:
         """
 
         self.abort_flag = False
-        self.decoder = libh264decoder.H264Decoder()
+        # self.decoder = libh264decoder.H264Decoder()
+        self.decoder = TelloDecoder
         self.command_timeout = command_timeout
         self.imperial = imperial
         self.response = None  
@@ -98,8 +102,9 @@ class Tello:
         packet_data = ""
         while True:
             try:
-                res_string, ip = self.socket_video.recvfrom(2048)
-                packet_data += res_string
+                res_bytes, ip = self.socket_video.recvfrom(2048)
+                res_string = str(res_bytes)
+                packet_data += str(res_bytes)
                 # end of frame
                 if len(res_string) != 1460:
                     for frame in self._h264_decode(packet_data):
@@ -108,6 +113,19 @@ class Tello:
 
             except socket.error as exc:
                 print(("Caught exception socket.error : %s" % exc))
+
+    def decode(self, input_data):
+        import sys
+        sys.stdout.write(input_data)
+        sys.stdout.flush()
+        ffmpegCmd = ['ffmpeg', '-i', '-', '-f', 'rawvideo', '-vcodec', 'bmp', '-vf', 'fps=5', '-']
+        # ffmpegCmd = ['ffmpeg', '-i', '-', '-f', 'rawvideo', '-f', 'null', '-']
+        ffmpeg = sp.Popen(ffmpegCmd, stdin=sys.stdout, stdout=sp.PIPE)
+        print('\nhello=============================')
+        fileSizeBytes = ffmpeg.stdout.read(6)
+        print(fileSizeBytes)
+        print('goodbye================================')
+        return ffmpeg
     
     def _h264_decode(self, packet_data):
         """
@@ -118,18 +136,21 @@ class Tello:
         :return: a list of decoded frame
         """
         res_frame_list = []
-        frames = self.decoder.decode(packet_data)
-        for framedata in frames:
-            (frame, w, h, ls) = framedata
-            if frame is not None:
-                # print 'frame size %i bytes, w %i, h %i, linesize %i' % (len(frame), w, h, ls)
+        # frames = self.decode(packet_data)
+        ffmpeg = self.decode(packet_data)
+        fileSizeBytes = ffmpeg.stdout.read(6)
+        print(fileSizeBytes)
+        # for framedata in frames:
+        #     (frame, w, h, ls) = framedata
+        #     if frame is not None:
+        #         print(f'frame size {len(frame)} bytes, w {w}, h {h}, linesize {ls}')
 
-                frame = np.fromstring(frame, dtype=np.ubyte, count=len(frame), sep='')
-                frame = (frame.reshape((h, ls / 3, 3)))
-                frame = frame[:, :w, :]
-                res_frame_list.append(frame)
+        #         frame = np.fromstring(frame, dtype=np.ubyte, count=len(frame), sep='')
+        #         frame = (frame.reshape((h, ls / 3, 3)))
+        #         frame = frame[:, :w, :]
+        #         res_frame_list.append(frame)
 
-        return res_frame_list
+        # return res_frame_list
 
     def send_command(self, command):
         """

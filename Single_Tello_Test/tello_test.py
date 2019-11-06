@@ -9,7 +9,7 @@ exists_command_file = False
 if len(sys.argv) == 2:
     file_name = sys.argv[1]
     
-    f = open(file_name, "r")
+    f = open(file_name, 'r')
     commands = f.readlines()
     exists_command_file = True
 
@@ -22,7 +22,7 @@ if exists_command_file:
     
             if command.find('delay') != -1:
                 sec = float(command.partition('delay')[2])
-                print('delay %s' % sec)
+                print(f'delay {sec}')
                 time.sleep(sec)
                 pass
             else:
@@ -34,10 +34,10 @@ else:
     print('========================')
     while True: 
         try:
-            command = input("input: ")
+            command = input('input: ')
             
             if not command:
-                print("invalid message")
+                print('invalid message')
                 break
     
             if 'end' in command:

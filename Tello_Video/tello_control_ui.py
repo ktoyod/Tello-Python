@@ -9,10 +9,11 @@ import os
 import time
 import platform
 
+
 class TelloUI:
     """Wrapper class to enable the GUI."""
 
-    def __init__(self,tello,outputpath):
+    def __init__(self, tello, outputpath):
         """
         Initial all the element of the GUI,support by Tkinter
 
@@ -20,21 +21,21 @@ class TelloUI:
 
         Raises:
             RuntimeError: If the Tello rejects the attempt to enter command mode.
-        """        
+        """
 
-        self.tello = tello # videostream device
-        self.outputPath = outputpath # the path that save pictures created by clicking the takeSnapshot button 
-        self.frame = None  # frame read from h264decoder and used for pose recognition 
-        self.thread = None # thread of the Tkinter mainloop
+        self.tello = tello  # videostream device
+        self.outputPath = outputpath  # the path that save pictures created by clicking the takeSnapshot button 
+        self.frame = None   # frame read from h264decoder and used for pose recognition 
+        self.thread = None  # thread of the Tkinter mainloop
         self.stopEvent = None  
-        
+
         # control variables
         self.distance = 0.1  # default distance for 'move' cmd
         self.degree = 30  # default degree for 'cw' or 'ccw' cmd
 
         # if the flag is TRUE,the auto-takeoff thread will stop waiting for the response from tello
         self.quit_waiting_flag = False
-        
+
         # initialize the root window and image panel
         self.root = tki.Tk()
         self.panel = None
@@ -53,7 +54,7 @@ class TelloUI:
             self.root, text="Open Command Panel", relief="raised", command=self.openCmdWindow)
         self.btn_landing.pack(side="bottom", fill="both",
                               expand="yes", padx=10, pady=5)
-        
+
         # start a thread that constantly pools the video sensor for
         # the most recently read frame
         self.stopEvent = threading.Event()
@@ -66,6 +67,7 @@ class TelloUI:
 
         # the sending_command will send command to tello every 5 seconds
         self.sending_command_thread = threading.Thread(target = self._sendingCommand)
+
     def videoLoop(self):
         """
         The mainloop thread of Tkinter 
@@ -100,7 +102,6 @@ class TelloUI:
         except RuntimeError as e:
             print("[INFO] caught a RuntimeError")
 
-           
     def _updateGUIImage(self,image):
         """
         Main operation to initial the object of image,and update the GUI panel 
@@ -116,7 +117,6 @@ class TelloUI:
             self.panel.configure(image=image)
             self.panel.image = image
 
-            
     def _sendingCommand(self):
         """
         start a while loop that sends 'command' to tello every 5 second
